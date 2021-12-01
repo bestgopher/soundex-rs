@@ -1,7 +1,11 @@
 //! soundex_rs is a library that calculates the words' soundex.
-//! Algorithm reference: https://support.esri.com/en/technical-article/000003773
 //!
-//! | feature | description |
+//! # References
+//! https://support.esri.com/en/technical-article/000003773
+//!
+//!  # Features
+//! | feature | description  |
+//! | --------| -------------|
 //! | default | The result retains the first four characters of the soundex value｜
 //! | full    | The result retains the complete value of soundex |
 
