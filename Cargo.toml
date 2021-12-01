@@ -9,7 +9,6 @@ license = "MIT"
 homepage = "https://github.com/bestgopger/soundex-rs"
 repository = "https://github.com/bestgopger/soundex-rs"
 keywords = ["soundex"]
-categories = ["string", "soundex"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
