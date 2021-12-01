@@ -17,3 +17,5 @@ categories = ["string", "soundex"]
 
 [features]
 full = []
+default = []
+

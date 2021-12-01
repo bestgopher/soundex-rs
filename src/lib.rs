@@ -2,7 +2,7 @@
 //! Algorithm reference: https://support.esri.com/en/technical-article/000003773
 //!
 //! | feature | description |
-//! | default | The result value retains the first four characters of the soundex value｜
+//! | default | The result retains the first four characters of the soundex value｜
 //! | full    | The result retains the complete value of soundex |
 
 #[inline(always)]
