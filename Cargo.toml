@@ -1,0 +1,19 @@
+[package]
+name = "soundex-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["bestgopger <84328409@qq.com>"]
+description = "A library that calculates soundex value."
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/bestgopger/soundex-rs"
+repository = "https://github.com/bestgopger/soundex-rs"
+keywords = ["soundex"]
+categories = ["string", "soundex"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[features]
+full = []
