@@ -18,13 +18,13 @@ fn number_map(i: char) -> Option<char> {
         'l' => Some('4'),
         'm' | 'n' => Some('5'),
         'r' => Some('6'),
-        _ => None,
+        _ => Some('0'),
     }
 }
 
 #[inline(always)]
 fn is_drop(c: char) -> bool {
-    matches!(c, 'a' | 'e' | 'i' | 'o' | 'u' | 'y' | 'h' | 'w')
+    matches!(c.to_ascii_lowercase(), 'a' | 'e' | 'i' | 'o' | 'u' | 'y' | 'h' | 'w')
 }
 
 /// soundex get the string's soundex value.
@@ -42,31 +42,38 @@ pub fn soundex(s: &str) -> String {
         return Default::default();
     }
 
-    let mut r = vec![];
+    let mut r = Vec::with_capacity(4);
     let mut last = None;
+    let mut count = 0;
 
     for next in s.chars() {
         let score = number_map(next);
 
-        if r.is_empty() {
+        if last.is_none() {
+            if !next.is_alphanumeric() {
+                continue;
+            }
+
             last = score;
             r.push(next.to_ascii_uppercase());
         } else {
-            if is_drop(next) || score.is_none() || score == last {
+            if !next.is_ascii_alphabetic() || is_drop(next) || score.is_none() || score == last {
                 continue;
             }
 
             last = score;
             r.push(score.unwrap());
+        }
 
-            if !cfg!(feature = "full") && r.len() == 4 {
-                break;
-            }
+        count += 1;
+
+        if !cfg!(feature = "full") && count == 4 {
+            break;
         }
     }
 
-    if r.len() < 4 {
-        r.extend(vec!['0'; 4 - r.len()])
+    if count < 4 {
+        r.extend(vec!['0'; 4 - count])
     }
 
     r.into_iter().collect()
