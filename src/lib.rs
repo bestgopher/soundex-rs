@@ -57,7 +57,7 @@ pub fn soundex(s: &str) -> String {
             last = score;
             r.push(next.to_ascii_uppercase());
         } else {
-            if !next.is_ascii_alphabetic() || is_drop(next) || score.is_none() || score == last {
+            if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
                 continue;
             }
 
