@@ -1,13 +1,77 @@
 //! soundex_rs is a library that calculates the words' soundex.
 //!
 //! # References
-//! https://support.esri.com/en/technical-article/000003773
+//! <https://support.esri.com/en/technical-article/000003773>
 //!
 //!  # Features
 //! | feature | description  |
 //! | --------| -------------|
 //! | default | The result retains the first four characters of the soundex value｜
 //! | full    | The result retains the complete value of soundex |
+//!
+//! # Examples
+//! ```
+//! use soundex_rs::Soundex;
+//! assert_eq!("hello world".soundex(), "H4643".to_string());
+//! ```
+
+use std::ops::Deref;
+
+pub trait Soundex: Deref<Target = str> {
+    /// soundex get the string's soundex value.
+    /// # Examples
+    /// ```
+    /// use soundex_rs::Soundex;
+    /// if cfg!(feature="full") {
+    ///     assert_eq!("hello world".soundex(), "H4643".to_string());
+    /// } else {
+    ///     assert_eq!("hello world".soundex(), "H464".to_string());
+    /// }
+    /// ```
+    fn soundex(&self) -> String {
+        if self.is_empty() {
+            return Default::default();
+        }
+
+        let mut r = Vec::with_capacity(4);
+        let mut last = None;
+        let mut count = 0;
+
+        for next in self.chars() {
+            let score = number_map(next);
+
+            if last.is_none() {
+                if !next.is_alphanumeric() {
+                    continue;
+                }
+
+                last = score;
+                r.push(next.to_ascii_uppercase());
+            } else {
+                if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
+                    continue;
+                }
+
+                last = score;
+                r.push(score.unwrap());
+            }
+
+            count += 1;
+
+            if !cfg!(feature = "full") && count == 4 {
+                break;
+            }
+        }
+
+        if count < 4 {
+            r.extend(vec!['0'; 4 - count])
+        }
+
+        r.into_iter().collect()
+    }
+}
+
+impl<T: Deref<Target = str>> Soundex for T {}
 
 #[inline(always)]
 fn number_map(i: char) -> Option<char> {
@@ -24,59 +88,10 @@ fn number_map(i: char) -> Option<char> {
 
 #[inline(always)]
 fn is_drop(c: char) -> bool {
-    matches!(c.to_ascii_lowercase(), 'a' | 'e' | 'i' | 'o' | 'u' | 'y' | 'h' | 'w')
-}
-
-/// soundex get the string's soundex value.
-/// # Examples
-/// ```
-/// use soundex_rs::soundex;
-/// if cfg!(feature="full") {
-///     assert_eq!(soundex("hello world"), "H4643".to_string());
-/// } else {
-///     assert_eq!(soundex("hello world"), "H464".to_string());
-/// }
-/// ```
-pub fn soundex(s: &str) -> String {
-    if s.is_empty() {
-        return Default::default();
-    }
-
-    let mut r = Vec::with_capacity(4);
-    let mut last = None;
-    let mut count = 0;
-
-    for next in s.chars() {
-        let score = number_map(next);
-
-        if last.is_none() {
-            if !next.is_alphanumeric() {
-                continue;
-            }
-
-            last = score;
-            r.push(next.to_ascii_uppercase());
-        } else {
-            if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
-                continue;
-            }
-
-            last = score;
-            r.push(score.unwrap());
-        }
-
-        count += 1;
-
-        if !cfg!(feature = "full") && count == 4 {
-            break;
-        }
-    }
-
-    if count < 4 {
-        r.extend(vec!['0'; 4 - count])
-    }
-
-    r.into_iter().collect()
+    matches!(
+        c.to_ascii_lowercase(),
+        'a' | 'e' | 'i' | 'o' | 'u' | 'y' | 'h' | 'w'
+    )
 }
 
 /// equal compares two strings' soundex value, if the result is equal, returns true.
@@ -86,12 +101,12 @@ pub fn soundex(s: &str) -> String {
 ///  assert!(equal("Y.LEE", "Y.LIE"));
 /// ```
 pub fn equal(left: &str, right: &str) -> bool {
-    soundex(left) == soundex(right)
+    left.soundex() == right.soundex()
 }
 
 #[cfg(test)]
 mod tests {
-    use super::soundex;
+    use super::Soundex;
 
     #[test]
     fn test_soundex() {
@@ -115,9 +130,23 @@ mod tests {
 
         for (i, v) in m.into_iter() {
             if cfg!(feature = "full") {
-                assert_eq!(soundex(i), v, "{}", i);
+                assert_eq!(i.soundex(), v, "{}", i);
+                assert_eq!(i.to_string().soundex(), v, "{}", i);
+                assert_eq!(i.to_string().as_mut().soundex(), v, "{}", i);
             } else {
-                assert_eq!(soundex(i), String::from_iter(v.chars().take(4)), "{}", i);
+                assert_eq!(i.soundex(), String::from_iter(v.chars().take(4)), "{}", i);
+                assert_eq!(
+                    i.to_string().soundex(),
+                    String::from_iter(v.chars().take(4)),
+                    "{}",
+                    i
+                );
+                assert_eq!(
+                    i.to_string().as_mut().soundex(),
+                    String::from_iter(v.chars().take(4)),
+                    "{}",
+                    i
+                );
             }
         }
     }
