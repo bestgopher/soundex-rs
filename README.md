@@ -3,9 +3,9 @@ A library that calculates soundex value.
 
 # usage
 ```rust
-use soundex_rs::soundex;
+use soundex_rs::Soundex;
 
-let value = soundex("hello world");
+let value = "hello world".soundex();
 assert_eq!(value, "H464".to_string());
 ```
 
