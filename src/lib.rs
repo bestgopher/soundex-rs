@@ -12,7 +12,7 @@
 //! # Examples
 //! ```
 //! use soundex_rs::Soundex;
-//! assert_eq!("hello world".soundex(), "H4643".to_string());
+//! println!("{}", "hello world".soundex());
 //! ```
 
 use std::ops::Deref;
@@ -28,6 +28,10 @@ pub trait Soundex: Deref<Target = str> {
     ///     assert_eq!("hello world".soundex(), "H464".to_string());
     /// }
     /// ```
+    fn soundex(&self) -> String;
+}
+
+impl<T: Deref<Target = str>> Soundex for T {
     fn soundex(&self) -> String {
         if self.is_empty() {
             return Default::default();
@@ -70,8 +74,6 @@ pub trait Soundex: Deref<Target = str> {
         r.into_iter().collect()
     }
 }
-
-impl<T: Deref<Target = str>> Soundex for T {}
 
 #[inline(always)]
 fn number_map(i: char) -> Option<char> {
