@@ -102,13 +102,19 @@ fn is_drop(c: char) -> bool {
 ///  use soundex_rs::equal;
 ///  assert!(equal("Y.LEE", "Y.LIE"));
 /// ```
-pub fn equal(left: &str, right: &str) -> bool {
+pub fn equal<LEFT, RIGHT>(left: LEFT, right: RIGHT) -> bool
+where
+    LEFT: Soundex,
+    RIGHT: Soundex,
+{
     left.soundex() == right.soundex()
 }
 
 #[cfg(test)]
 mod tests {
+
     use super::Soundex;
+    use crate::equal;
 
     #[test]
     fn test_soundex() {
@@ -151,5 +157,12 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn test_equal() {
+        assert!(equal("hello", "hello".to_string()));
+        assert!(equal("hello", "hello"));
+        assert!(!equal("hello world", "hello".to_string()));
     }
 }
