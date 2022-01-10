@@ -1,6 +1,12 @@
 # soundex-rs
 A library that calculates soundex value.
 
+# install
+```toml
+[dependencies]
+soundex-rs = "^0"
+```
+
 # usage
 ```rust
 use soundex_rs::Soundex;
