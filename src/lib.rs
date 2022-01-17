@@ -31,6 +31,7 @@ pub trait Soundex: Deref<Target = str> {
     fn soundex(&self) -> String;
 }
 
+/// Default implementation for strings.
 impl<T: Deref<Target = str>> Soundex for T {
     fn soundex(&self) -> String {
         if self.is_empty() {
