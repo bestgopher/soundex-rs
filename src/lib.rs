@@ -63,8 +63,11 @@ impl<T: Deref<Target = str>> Soundex for T {
 
             count += 1;
 
-            if !cfg!(feature = "full") && count == 4 {
-                break;
+            #[cfg(not(feature = "full"))]
+            {
+                if count == 4 {
+                    break;
+                }
             }
         }
 
@@ -113,7 +116,6 @@ where
 
 #[cfg(test)]
 mod tests {
-
     use super::Soundex;
     use crate::equal;
 
