@@ -17,7 +17,7 @@
 
 use std::ops::Deref;
 
-pub trait Soundex: Deref<Target = str> {
+pub trait Soundex {
     /// soundex get the string's soundex value.
     /// # Examples
     /// ```
