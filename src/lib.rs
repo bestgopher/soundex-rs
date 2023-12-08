@@ -38,7 +38,7 @@ impl<T: Deref<Target = str>> Soundex for T {
             return Default::default();
         }
 
-        let mut r = Vec::with_capacity(4);
+        let mut reslut = String::with_capacity(4);
         let mut last = None;
         let mut count = 0;
 
@@ -51,14 +51,14 @@ impl<T: Deref<Target = str>> Soundex for T {
                 }
 
                 last = score;
-                r.push(next.to_ascii_uppercase());
+                reslut.push(next.to_ascii_uppercase());
             } else {
                 if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
                     continue;
                 }
 
                 last = score;
-                r.push(score.unwrap());
+                reslut.push(score.unwrap());
             }
 
             count += 1;
@@ -72,10 +72,10 @@ impl<T: Deref<Target = str>> Soundex for T {
         }
 
         if count < 4 {
-            r.extend(vec!['0'; 4 - count])
+            reslut.push_str("0".repeat(4 - count).as_str());
         }
 
-        r.into_iter().collect()
+        reslut
     }
 }
 

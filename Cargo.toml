@@ -1,6 +1,6 @@
 [package]
 name = "soundex-rs"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 authors = ["bestgopher <84328409@qq.com>"]
 description = "A library that calculates soundex value."
