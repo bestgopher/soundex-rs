@@ -45,20 +45,23 @@ impl<T: Deref<Target = str>> Soundex for T {
         for next in self.chars() {
             let score = number_map(next);
 
-            if last.is_none() {
-                if !next.is_alphanumeric() {
-                    continue;
-                }
+            match last {
+                Some(_) => {
+                    if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
+                        continue;
+                    }
 
-                last = score;
-                reslut.push(next.to_ascii_uppercase());
-            } else {
-                if !next.is_ascii_alphabetic() || is_drop(next) || score == last {
-                    continue;
+                    last = score;
+                    reslut.push(score.unwrap());
                 }
+                None => {
+                    if !next.is_alphanumeric() {
+                        continue;
+                    }
 
-                last = score;
-                reslut.push(score.unwrap());
+                    last = score;
+                    reslut.push(next.to_ascii_uppercase());
+                }
             }
 
             count += 1;

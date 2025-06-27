@@ -2,3 +2,4 @@
 Cargo.lock
 soundex-rs.iml
 .idea
+.DS_Store
